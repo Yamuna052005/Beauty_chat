@@ -54,6 +54,7 @@ Analyze the ingredients for safety risks, compliance issues, and country-specifi
 -cd beauty-compliance-bot
 ### create and activate virtual environment
 -python -m venv venv
+
 -venv\Scripts\activate
 ### install dependencies
 -pip install -r requirements.txt
