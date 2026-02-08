@@ -29,7 +29,7 @@ if not os.getenv("GOOGLE_API_KEY"):
 
 # ---------- STREAMLIT ----------
 st.set_page_config(page_title="Beauty Compliance Intelligence Bot")
-st.title("💄 Beauty Compliance & Product Intelligence Bot")
+st.title("Beauty Buddy: Compliance & Product Insights")
 
 
 # ---------- CACHE ----------
@@ -81,40 +81,42 @@ if url:
             tag.decompose()
 
         text = soup.get_text(" ", strip=True)
+
         if text:
-            documents.append(Document(page_content=text, metadata={"source": url}))
+            documents.append(
+                Document(page_content=text, metadata={"source": url})
+            )
 
     except RequestException as e:
         st.error(f"URL error: {e}")
 
 
-# ---------- IMAGE OCR ----------
-import shutil
-import platform
-
+# ---------- IMAGE OCR (WINDOWS SAFE) ----------
 image = st.file_uploader(
-    "Upload ingredient label image",
+    "Upload ingredient label image (optional)",
     type=["png", "jpg", "jpeg"]
 )
-if image:
-    # Detect OS / environment and set pytesseract path
-    if platform.system() == "Windows":
-        # Adjust this path to your local Tesseract installation
-        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-    else:
-        # Streamlit Cloud / Linux path
-        pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
-    if shutil.which("tesseract") is None:
-        st.warning("OCR is not supported on Streamlit Cloud.")
-    else:    
+if image:
+    try:
+        # Force Windows Tesseract path
+        pytesseract.pytesseract.tesseract_cmd = (
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+        )
+
         img = Image.open(image)
         ocr_text = pytesseract.image_to_string(img)
 
         if ocr_text.strip():
-            documents.append(Document(page_content=ocr_text, metadata={"source": "ocr"}))
+            documents.append(
+                Document(page_content=ocr_text, metadata={"source": "image_ocr"})
+            )
+            st.success("Ingredient text extracted from image")
         else:
-            st.warning("No text detected in the image.")    
+            st.warning("No readable text found in image")
+
+    except Exception:
+        st.warning("OCR not available on this system")
 
 
 # ---------- QA ----------
@@ -129,7 +131,10 @@ if documents:
 
     retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
 
-    llm=ChatGoogleGenerativeAI(model="gemini-2.5-flash",temperature=1.3)
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        temperature=1.2
+    )
 
     st.success("Knowledge base ready")
 
@@ -141,16 +146,17 @@ if documents:
         context = "\n\n".join(d.page_content for d in retrieved_docs)
 
         prompt = f"""
-You are a beauty compliance expert.
-Answer ONLY from the context below.
+You are a cosmetic regulatory and safety compliance expert.
+Answer ONLY using the context provided.
 
 Context:
-    {context}
+{context}
 
 Question:
-    {query}
+{query}
 """
 
         response = llm.invoke([HumanMessage(content=prompt)])
+
         st.subheader("Answer")
         st.write(response.content)
