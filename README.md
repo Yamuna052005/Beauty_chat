@@ -1,76 +1,153 @@
-#  Beauty Buddy: Compliance & Product Intelligence Bot
+# Beauty Buddy: AI-Powered Cosmetic Compliance & Risk Intelligence System
 
-## overview
-Beauty Buddy is an AI-powered document intelligence system designed to analyze cosmetic and personal care products.
-The application extracts ingredient information from product documents, labels, and web pages, and evaluates safety risks, regulatory compliance, and potential restrictions or bans across different regions
+## Overview
+Beauty Buddy is an AI-driven document intelligence platform designed to automate cosmetic ingredient analysis, safety assessment, and regulatory compliance validation.
 
-This project demonstrates how AI can support cosmetic compliance, product safety assessment, and decision support using real-world data sources.
+The system processes unstructured product data such as PDFs, images, and web pages, extracts ingredient-level information, and performs multi-dimensional analysis including toxicological risk evaluation and region-specific regulatory checks.
+
+---
 
 ## Problem Statement
-Cosmetic products often contain complex ingredient lists that are difficult for consumers, startups, and compliance teams to interpret.
-Manual verification of safety risks and regulatory restrictions is time-consuming and prone to errors.
+Cosmetic formulations often contain dense, non-standardized ingredient lists that are difficult to interpret.
 
-## What This System Automates
--Ingredient extraction
+Challenges:
+- Regulatory requirements differ across regions (EU, US, India, etc.)
+- Ingredient safety data is fragmented
+- Manual compliance checks are slow and error-prone
+- Startups lack access to regulatory intelligence tools
 
--Risk identification
+---
 
--Compliance analysis
+## Solution
+Beauty Buddy automates the end-to-end compliance workflow:
 
--Regulatory flagging
+- Extracts ingredient data from multiple input formats
+- Identifies hazardous or controversial compounds
+- Maps ingredients to regulatory frameworks
+- Flags banned or restricted substances
+- Generates structured compliance reports
+
+---
+
+## Core Features
+
+### Multi-Source Data Ingestion
+- Product PDFs
+- Web pages
+- Ingredient label images
+
+### Intelligent Ingredient Extraction
+- Handles unstructured text
+- Normalizes ingredient names
+
+### Risk & Safety Analysis
+- Detects allergens, irritants, and toxic compounds
+- Provides contextual explanations
+
+### Regulatory Compliance Engine
+- Identifies banned/restricted ingredients
+- Supports region-specific validation
+
+### Retrieval-Augmented Generation (RAG)
+- Uses vector similarity search
+- Enhances LLM response accuracy
+
+---
+
+## System Architecture
+
+1. Input Layer
+   - PDF / URL / Image
+
+2. Extraction Layer
+   - PyPDF Loader
+   - BeautifulSoup
+   - Tesseract OCR
+
+3. Processing Layer
+   - Text chunking
+   - Embedding generation
+
+4. Retrieval Layer
+   - FAISS vector database
+
+5. AI Analysis Layer
+   - Google Gemini (via LangChain)
+   - Safety and compliance reasoning
+
+6. Output Layer
+   - Structured compliance report
+
+---
 
 ## Technology Stack
+
 ### Frontend
-streamlit
-### AI/NLP
--LangChain
+- Streamlit
 
--Google Gemini (LLM)
+### AI / NLP
+- LangChain
+- Google Gemini
+- Sentence Transformers
 
--Sentence Transformers (Embeddings)
-### Vector Database
-FAISS
-### Data Processing
--BeautifulSoup (Web Scraping)
+### Data & Retrieval
+- FAISS
 
--PyPDF Loader
+### Data Extraction
+- BeautifulSoup
+- PyPDF Loader
+- Tesseract OCR
 
--Tesseract OCR (Image Text Extraction)
+---
 
- ## System Workflow
- 1.User provides input through:
-Product PDF,
-Product URL,
-Ingredient label image
+## Example Use Case
+Input: Upload a cosmetic product label (image or PDF)
 
-2.The system extracts text from the provided sources.
+Output:
+- Ingredient list
+- Risk classification (Low / Moderate / High)
+- Compliance flags
+- Region-specific insights
+- Explanation for flagged ingredients
 
-3.Extracted text is split into smaller chunks and converted into embeddings.
+---
 
-4.FAISS retrieves the most relevant context.
+## Installation & Setup
 
-5.The LLM analyzes:
-Ingredients,
-Safety risks,
-Compliance issues,
-Regulatory concerns
+### Clone Repository
+git clone <your-repository-url>
+cd beauty-compliance-bot
 
-6.A structured response with safety and compliance insights is generated.
+### Create Virtual Environment
+python -m venv venv
+venv\Scripts\activate
 
-## Example Analysis Question
-Analyze the ingredients for safety risks, compliance issues, and country-specific bans.
+### Install Dependencies
+pip install -r requirements.txt
 
-## Installation
-### clone the repository
--git clone <your-repository-url>
+### Run Application
+streamlit run app.py
 
--cd beauty-compliance-bot
-### create and activate virtual environment
--python -m venv venv
+---
 
--venv\Scripts\activate
-### install dependencies
--pip install -r requirements.txt
-### Run the application
--streamlit run app.py
+## Limitations
+- Limited regulatory datasets
+- LLM outputs may need validation
+- OCR accuracy depends on image quality
 
+---
+
+## Future Enhancements
+- Integration with official regulatory databases
+- Real-time compliance API
+- Ingredient substitution suggestions
+- Multilingual support
+- Mobile application
+
+---
+
+## Project Value
+- Demonstrates RAG architecture
+- Applies AI to real-world compliance problems
+- Handles unstructured data pipelines
+- Uses LLMs for decision support
